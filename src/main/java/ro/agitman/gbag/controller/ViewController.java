@@ -1,4 +1,4 @@
-package ro.agitman.gbag.web;
+package ro.agitman.gbag.controller;
 
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,7 +6,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.sql2o.Sql2o;
+import org.springframework.web.bind.annotation.ResponseBody;
+import ro.agitman.gbag.model.ItemModel;
+import ro.agitman.gbag.service.ItemService;
 
 
 /**
@@ -19,7 +21,7 @@ public class ViewController {
     private Gson gson = new Gson();
 
     @Autowired
-    private Sql2o sql2o;
+    private ItemService service;
 
     // Navigation
 
@@ -40,6 +42,14 @@ public class ViewController {
 
 
     // Manage page actions
+
+    @RequestMapping(value = {"/savePlant"}, method = RequestMethod.POST)
+    @ResponseBody
+    public String savePlant(ItemModel item) {
+        service.addItem(item);
+        return "";
+    }
+
 
 //    @RequestMapping(value = {"/savePlant"}, method = RequestMethod.POST)
 //    @ResponseBody
