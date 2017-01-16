@@ -1,0 +1,56 @@
+.red{
+    background-color: red;
+}
+
+.blue{
+    background-color: blue;
+}
+
+.green{
+    background-color: green;
+}
+
+.black{
+    background-color: black;
+}
+
+.editMode{
+    background-color: yellowgreen;
+}
+
+.pickListButtons {
+    padding: 10px;
+    text-align: center;
+    display: inline-block;
+    width: 100px;
+}
+
+.pickListButtons button {
+    margin-bottom: 5px;
+}
+
+.pickListSelect {
+    height: 200px !important;
+    width: 160px;
+}
+
+.pickListTitle{
+    font-weight: bold;
+}
+
+.plantBIG{
+    background-color: lightcoral;
+}
+
+.plantMED{
+  background-color: palegreen;
+}
+
+.plantENG{
+    background-color: darkgray;
+    color: black;
+}
+
+.bought{
+    text-decoration: line-through;
+}
