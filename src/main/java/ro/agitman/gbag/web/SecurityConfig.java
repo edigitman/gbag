@@ -38,7 +38,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http.authorizeRequests()
-                .antMatchers("/dba/**").authenticated()
+                .antMatchers("/auth/isAuth").authenticated()
+                .antMatchers("/i/**").authenticated()
+                .antMatchers("/a/**").authenticated()
                 .and().formLogin()
                 .loginPage("/login").loginProcessingUrl("/login")
                 .usernameParameter("email")

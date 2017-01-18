@@ -2,13 +2,26 @@ package ro.agitman.gbag.controller;
 
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import ro.agitman.gbag.model.ItemModel;
+import ro.agitman.gbag.model.MyUser;
 import ro.agitman.gbag.service.ItemService;
+import ro.agitman.gbag.service.UserService;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -18,60 +31,61 @@ import ro.agitman.gbag.service.ItemService;
 @RequestMapping("/")
 public class ViewController {
 
-    private Gson gson = new Gson();
-
     @Autowired
-    private ItemService service;
+    private UserService userService;
 
     // Navigation
 
     @RequestMapping(value = {"/"}, method = RequestMethod.GET)
-    public String hompage(ModelMap model) {
+    public String hompage() {
         return "index";
     }
 
+    @RequestMapping(value = {"/login"}, method = RequestMethod.GET)
+    @ResponseBody
+    public String loginPage() {
+        return "notAuth";
+    }
+
+    @RequestMapping(value = {"/login"}, method = RequestMethod.POST)
+    @ResponseBody
+    public String loginPost() {
+        return "notAuthReg";
+    }
+
+    @RequestMapping(value = {"/register"}, method = RequestMethod.POST)
+    @ResponseBody
+    public String registerPost(MyUser myUser) {
+
+        if (userService.isValidUser(myUser)) {
+            userService.insertUser(myUser);
+
+            List<GrantedAuthority> authorities = new ArrayList<>();
+            authorities.add(new SimpleGrantedAuthority("user"));
+
+            Authentication auth = new UsernamePasswordAuthenticationToken(myUser.getEmail(), myUser.getPassword(), authorities);
+
+            SecurityContextHolder.getContext().setAuthentication(auth);
+
+            return "ok";
+        }
+
+        return "ko";
+    }
+
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+        return "redirect:/?logout";//You can redirect wherever you want, but generally it's a good practice to show login screen again.
+    }
+
     @RequestMapping(value = {"/reports"}, method = RequestMethod.GET)
-    public String reports(ModelMap model) {
+    public String reports() {
         return "reports";
     }
-
-    @RequestMapping(value = {"/help"}, method = RequestMethod.GET)
-    public String help(ModelMap model) {
-        return "help";
-    }
-
-
-    // Manage page actions
-
-    @RequestMapping(value = {"/savePlant"}, method = RequestMethod.POST)
-    @ResponseBody
-    public String savePlant(ItemModel item) {
-        service.addItem(item);
-        return "";
-    }
-
-
-//    @RequestMapping(value = {"/savePlant"}, method = RequestMethod.POST)
-//    @ResponseBody
-//    public String savePlant(PlantModel plant) {
-//        try (Connection con = sql2o.open()) {
-//
-//            if (plant.getId() != null && plant.getId() != 0) {
-//                con.createQueryWithParams(UPDATE_PLANT).
-//                        addParameter("name", plant.getName()).
-//                        addParameter("size", plant.getSize()).
-//                        addParameter("id", plant.getId()).executeUpdate();
-//            } else {
-//                con.createQueryWithParams(INSERT_PLANT).
-//                        addParameter("name", plant.getName()).
-//                        addParameter("size", plant.getSize()).executeUpdate();
-//            }
-//
-//            List<PlantModel> tasks = con.createQuery(QUERY_PLANT).executeAndFetch(PlantModel.class);
-//            return gson.toJson(tasks);
-//        }
-//    }
-
 }
 
 

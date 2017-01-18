@@ -9,9 +9,10 @@ public class ItemModel {
 
     private Long id;
     private String name;
-    private String qt;
+    private BigDecimal qt;
     private Boolean inBasket;
     private BigDecimal price;
+    private Long listId;
 
     public Long getId() {
         return id;
@@ -29,11 +30,11 @@ public class ItemModel {
         this.name = name;
     }
 
-    public String getQt() {
+    public BigDecimal getQt() {
         return qt;
     }
 
-    public void setQt(String qt) {
+    public void setQt(BigDecimal qt) {
         this.qt = qt;
     }
 
@@ -51,5 +52,13 @@ public class ItemModel {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public Long getListId() {
+        return listId;
+    }
+
+    public void setListId(Long listId) {
+        this.listId = listId;
     }
 }

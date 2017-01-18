@@ -54,3 +54,7 @@
 .bought{
     text-decoration: line-through;
 }
+
+#invalidCredentials{
+    color: firebrick;
+}

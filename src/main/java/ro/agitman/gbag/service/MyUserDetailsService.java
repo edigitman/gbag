@@ -14,6 +14,7 @@ import org.sql2o.Sql2o;
 import ro.agitman.gbag.model.MyUser;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -22,18 +23,22 @@ import java.util.List;
 @Service("userDetailsService")
 public class MyUserDetailsService implements UserDetailsService {
 
-    private final String SELECT_USER = "";
+    public static final String SELECT_USER = "select * from users where email = :email";
 
-    //get user from the database, via Hibernate
     @Autowired
     private Sql2o sql2o;
 
-    @Transactional(readOnly=true)
+    @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         try (Connection con = sql2o.open()) {
             MyUser user = con.createQueryWithParams(SELECT_USER).addParameter("email", username).executeAndFetchFirst(MyUser.class);
+
+            if (user == null) {
+                throw new UsernameNotFoundException("User " + username + " not found.");
+            }
+
             List<GrantedAuthority> authorities = new ArrayList<>();
             authorities.add(new SimpleGrantedAuthority(user.getRole()));
 

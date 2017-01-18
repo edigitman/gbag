@@ -5,10 +5,19 @@ package ro.agitman.gbag.model;
  */
 public class MyUser {
 
+    private Long id;
     private String email;
     private String password;
     private Boolean enabled;
     private String role;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getEmail() {
         return email;

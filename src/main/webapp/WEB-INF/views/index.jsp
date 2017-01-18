@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1" %>
 <%@ page isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -31,14 +30,17 @@
 
     <div class="row">
         <div id="accountDiv" class="col-md-8 col-md-offset-2">
+            <span id="invalidCredentials" hidden>Invalid credentials - Try to register <br/></span>
+            <span id="cannotRegister" hidden>Account already used <a href="#">Recover password</a> <br/></span>
             Email <input v-model="email" type="text">
-            Pwd <input v-model="pwd" type="text">
+            Password <input v-model="pwd" type="password">
             <button class="btn btn-default" @click="login">Login</button>
             <a href="#" @click="register">Register</a>
         </div>
         <div id="menuDiv" class="col-md-8 col-md-offset-2" style="text-align: center" hidden>
             <a class="hyperlink" href="#" @click="switchList">{{listName}}</a>  |
-            <a class="hyperlink" href="reports">Reports</a>
+            <a class="hyperlink" href="reports">Reports</a> |
+            <a class="hyperlink" href="logout"> Logout</a>
         </div>
     </div>
 
@@ -132,6 +134,20 @@
             itemQt: '',
             itemPrice: '',
             itemSelectedIdx: ''
+        },
+        created: function() {
+            //do a login check
+            console.log("ready vue");
+            $.get("auth/isAuth", function(data, status){
+                console.log("data: " + data);
+                console.log("status: " + status);
+                if("notAuth" != data){
+                    $("#accountDiv").hide();
+                    $("#menuDiv").show();
+                    $("#listDiv").show();
+                    $("#itemNameId").focus();
+                }
+            });
         },
         methods: {
             // active list actions
@@ -345,12 +361,32 @@
 
             login: function () {
                 var self = this;
+                var errorMsg = $("#invalidCredentials");
                 console.log(self.email + " -- " + self.pwd);
 
-                $("#accountDiv").hide();
-                $("#menuDiv").show();
-                $("#listDiv").show();
-                $("#itemNameId").focus();
+
+                errorMsg.hide();
+                $.ajax({
+                    type: "POST",
+                    url: "login",
+                    data: {email: self.email, password: self.pwd},
+                    success: function(data, status){
+                        console.log("data: " + data);
+                        console.log("status: " + status);
+
+                        if("notAuth" != data){
+                            $("#accountDiv").hide();
+                            $("#menuDiv").show();
+                            $("#listDiv").show();
+                            $("#itemNameId").focus();
+                        } else {
+                            // user or pass incorect
+                            errorMsg.show();
+                        }
+                    }
+                });
+
+
                 // do a post to login - get a token to put as cookie
                 // get the list of active items
                 // hide top form - show some menu: logout / reports / archived
@@ -359,10 +395,29 @@
             register: function () {
                 var self = this;
                 console.log(self.email + " -- " + self.pwd);
-                // do a post to create account - get a token
-            },
-            initOnAccount: function () {
-//                 after user authenticated prepare the data and view
+                var errorMsg = $("#cannotRegister");
+
+                errorMsg.hide();
+                $("#invalidCredentials").hide();
+                $.ajax({
+                    type: "POST",
+                    url: "register",
+                    data: {email: self.email, password: self.pwd},
+                    success: function(data, status){
+                        console.log("data: " + data);
+                        console.log("status: " + status);
+
+                        if("ok" == data){
+                            $("#accountDiv").hide();
+                            $("#menuDiv").show();
+                            $("#listDiv").show();
+                            $("#itemNameId").focus();
+                        } else {
+                            // user or pass incorect
+                            errorMsg.show();
+                        }
+                    }
+                });
             }
         }
     });

@@ -40,6 +40,9 @@ public class ItemService {
      * promoteAll
      * removeArchItem
      * clearArchived
+     *
+     * getItems
+     * getItemsArch
      */
 
 

@@ -44,14 +44,15 @@ public class AppConfig extends WebMvcConfigurerAdapter {
     @Bean
     public Sql2o sql2o() {
     	try {
-            Class.forName("com.mysql.jdbc.Driver");
+//            Class.forName("com.mysql.jdbc.Driver");
 			Class.forName("org.h2.Driver");
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-        return new Sql2o("jdbc:h2:~/gbag;MV_STORE=FALSE", "sa", "");
+        return new Sql2o("jdbc:h2:C:/Users/d-uu31cq/gbag;MV_STORE=FALSE", "sa", "");
+//        return new Sql2o("jdbc:h2:mem:test", "sa", "");
 //        return new Sql2o("jdbc:mysql://sql7.freemysqlhosting.net:3306/sql7152378", "", "");
     }
 
