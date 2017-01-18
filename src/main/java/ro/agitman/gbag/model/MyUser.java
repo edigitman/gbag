@@ -1,5 +1,7 @@
 package ro.agitman.gbag.model;
 
+import java.util.Date;
+
 /**
  * Created by d-uu31cq on 16.01.2017.
  */
@@ -10,6 +12,7 @@ public class MyUser {
     private String password;
     private Boolean enabled;
     private String role;
+    private Date createDate;
 
     public Long getId() {
         return id;
@@ -54,4 +57,13 @@ public class MyUser {
     public void setRole(String role) {
         this.role = role;
     }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
 }
+

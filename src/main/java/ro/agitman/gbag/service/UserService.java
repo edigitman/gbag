@@ -20,13 +20,20 @@ public class UserService {
     @Autowired
     private PasswordEncoder encoder;
 
+    public MyUser getByEmail(String email) {
+        try (Connection con = sql2o.open()) {
+            return con.createQueryWithParams(MyUserDetailsService.SELECT_USER)
+                    .addParameter("email", email).executeAndFetchFirst(MyUser.class);
+        }
+    }
+
     public boolean isValidUser(MyUser user) {
 
         if (user == null)
             return false;
         if (user.getEmail() == null || user.getEmail().trim().isEmpty())
             return false;
-        if(user.getPassword() == null || user.getPassword().trim().isEmpty())
+        if (user.getPassword() == null || user.getPassword().trim().isEmpty())
             return false;
         //todo check email format and password strength min 8 chars
 

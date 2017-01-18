@@ -14,6 +14,7 @@ public class ShoppingListModel {
     private String shop;
     private Date date;
     private BigDecimal total;
+    private Date createDate;
 
     public Long getId() {
         return id;
@@ -61,5 +62,13 @@ public class ShoppingListModel {
 
     public void setTotal(BigDecimal total) {
         this.total = total;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
 }
