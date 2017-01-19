@@ -146,6 +146,7 @@
                     $("#menuDiv").show();
                     $("#listDiv").show();
                     $("#itemNameId").focus();
+                    //todo load items
                 }
             });
         },
@@ -155,6 +156,17 @@
                 // get the current item name and size an add it to the list
                 var self = this;
                 console.log(self.itemName + " - " + self.itemQt);
+
+                $.ajax({
+                    type: "POST",
+                    url: "i/item",
+                    data: {name: self.itemName, qt: self.itemQt},
+                    success: function(data, status){
+                        console.log("data: " + data);
+                        console.log("status: " + status);
+                    }
+                });
+
                 self.items.push({name: self.itemName, qt: self.itemQt});
                 self.itemName = '';
                 self.itemQt = '';
@@ -169,6 +181,11 @@
                         filter.push(self.items[i]);
                     }
                 }
+                $.ajax({ type: "DELETE", url: "i/item", data: {id: index}, success: function(data, status){
+                        console.log("data: " + data);
+                        console.log("status: " + status);
+                    }
+                });
                 self.items = filter;
             },
             removeAllItems: function () {
@@ -180,6 +197,11 @@
                         filter.push(self.items[i]);
                     }
                 }
+                $.ajax({ type: "DELETE", url: "i/itemAll", success: function(data, status){
+                    console.log("data: " + data);
+                    console.log("status: " + status);
+                }
+                });
                 self.items = filter;
             },
             addToBasketView: function (index) {
@@ -219,6 +241,16 @@
                 self.items = filter;
 
                 self.cancelAddToBasket();
+
+                $.ajax({
+                    type: "POST",
+                    url: "i/basket",
+                    data: {id: self.itemSelectedIdx, price: self.itemPrice},
+                    success: function(data, status){
+                        console.log("data: " + data);
+                        console.log("status: " + status);
+                    }
+                });
             },
             removeFromBasket: function(index){
                 var self = this;
@@ -240,6 +272,12 @@
                 filter.splice(cIndex, 0, cItem);
 
                 self.items = filter;
+
+                $.ajax({ type: "DELETE", url: "i/basket", data: {id: index}, success: function(data, status){
+                    console.log("data: " + data);
+                    console.log("status: " + status);
+                }
+                });
             },
             archiveItem: function (index) {
                 // archive item - to a secondary list
@@ -254,6 +292,15 @@
                     }
                 }
                 self.items = filter;
+                $.ajax({
+                    type: "POST",
+                    url: "i/arch",
+                    data: {id: index},
+                    success: function(data, status){
+                        console.log("data: " + data);
+                        console.log("status: " + status);
+                    }
+                });
             },
             archiveAllItem: function () {
                 // archive all item - to a secondary list
@@ -266,8 +313,17 @@
                         self.archs.push(self.items[i]);
                     }
                 }
-                //TODO push arch as archived
+
                 self.items = filter;
+                $.ajax({
+                    type: "POST",
+                    url: "i/archAll",
+                    data: {},
+                    success: function(data, status){
+                        console.log("data: " + data);
+                        console.log("status: " + status);
+                    }
+                });
             },
             closeListView: function () {
                 // consider the current list completed
@@ -332,6 +388,15 @@
                     }
                 }
                 self.archs = filter;
+                $.ajax({
+                    type: "POST",
+                    url: "a/promote",
+                    data: {id: index},
+                    success: function(data, status){
+                        console.log("data: " + data);
+                        console.log("status: " + status);
+                    }
+                });
             },
             promoteAll: function () {
                 // promote all items to active list
@@ -341,6 +406,15 @@
                     self.items.push(self.archs[i]);
                 }
                 self.archs = [];
+                $.ajax({
+                    type: "POST",
+                    url: "a/promoteAll",
+                    data: {},
+                    success: function(data, status){
+                        console.log("data: " + data);
+                        console.log("status: " + status);
+                    }
+                });
             },
             removeArchItem: function(index){
                 var self = this;
@@ -351,10 +425,20 @@
                     }
                 }
                 self.archs = filter;
+                $.ajax({type: "DELETE", url: "a/clear", data: {id: index}, success: function (data, status) {
+                        console.log("data: " + data);
+                        console.log("status: " + status);
+                    }
+                });
             },
             clearArchived: function () {
                 // remove all archived
                 this.archs = [];
+                $.ajax({type: "DELETE", url: "a/clearAll", success: function (data, status) {
+                    console.log("data: " + data);
+                    console.log("status: " + status);
+                }
+                });
             },
 
             // account actions

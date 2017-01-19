@@ -49,8 +49,14 @@ public class ViewController {
 
     @RequestMapping(value = {"/login"}, method = RequestMethod.POST)
     @ResponseBody
-    public String loginPost() {
+    public String loginPost(MyUser myUser) {
         return "notAuthReg";
+    }
+
+    @RequestMapping(value = {"/Access_Denied"}, method = RequestMethod.GET)
+    @ResponseBody
+    public String accessDenied(MyUser myUser) {
+        return "accessDenied";
     }
 
     @RequestMapping(value = {"/register"}, method = RequestMethod.POST)
