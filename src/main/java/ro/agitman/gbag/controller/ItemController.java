@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -45,7 +46,7 @@ public class ItemController {
 
     @RequestMapping(value = {"item"}, method = RequestMethod.DELETE)
     @ResponseBody
-    public String removeItem(ItemModel item) {
+    public String removeItem(@RequestBody ItemModel item) {
         itemService.removeItem(item.getId(), getPrincipal());
         return gson.toJson(itemService.getItems(getPrincipal()));
     }
@@ -60,14 +61,14 @@ public class ItemController {
 
     @RequestMapping(value = {"basket"}, method = RequestMethod.POST)
     @ResponseBody
-    public String addItemToBasket(ItemModel item) {
+    public String addItemToBasket(@RequestBody ItemModel item) {
         itemService.addItemToBasket(item, getPrincipal());
         return gson.toJson(itemService.getItems(getPrincipal()));
     }
 
     @RequestMapping(value = {"basket"}, method = RequestMethod.DELETE)
     @ResponseBody
-    public String removeItemFromBasket(ItemModel item) {
+    public String removeItemFromBasket(@RequestBody ItemModel item) {
         itemService.removeItemFromBasket(item, getPrincipal());
         return gson.toJson(itemService.getItems(getPrincipal()));
     }

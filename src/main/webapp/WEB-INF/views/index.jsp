@@ -38,7 +38,7 @@
             <a href="#" @click="register">Register</a>
         </div>
         <div id="menuDiv" class="col-md-8 col-md-offset-2" style="text-align: center" hidden>
-            <a class="hyperlink" href="#" @click="switchList">{{listName}}</a>  |
+            <a class="hyperlink" href="#" @click="switchList">{{listName}}</a> |
             <a class="hyperlink" href="reports">Reports</a> |
             <a class="hyperlink" href="logout"> Logout</a>
         </div>
@@ -48,7 +48,7 @@
 
         <div class="col-md-8 col-md-offset-2" style="background-color: antiquewhite; margin-top: 10px">
 
-            <div style="text-align: center; margin-top: 5px" id="addItemDiv" >
+            <div style="text-align: center; margin-top: 5px" id="addItemDiv">
                 Item <input id="itemNameId" v-model="itemName" type="text">
                 qt. <input v-model="itemQt" style="width: 50px" type="number" min="0.0">
                 <button class="btn btn-info" @click="addItem">Add</button>
@@ -56,7 +56,7 @@
             <div style="text-align: center; margin-top: 5px" id="activeListItemActionsDiv">
                 <div id="itemPriceDiv" hidden>
                     Price <input id="itemPrice" v-model="itemPrice" type="text">
-                    <button class="btn btn-success" @click="addToBasket">A</button>
+                    <button class="btn btn-success" @click="addToBasket">B</button>
                     <button class="btn btn-danger" @click="cancelAddToBasket">C</button>
                 </div>
 
@@ -65,7 +65,7 @@
                     <button class="btn btn-success" @click="closeList">A</button>
                     <button class="btn btn-danger" @click="cancelCloseList">C</button>
                 </div>
-           </div>
+            </div>
 
             <div style="margin-top: 5px">
                 <ul id="archListUL" hidden>
@@ -73,23 +73,25 @@
                         <div style="width: 70%; display: inline-block">{{item.name}}</div>
                         <div style="width: 10%; display: inline-block">{{item.qt}}</div>
                         <div style="display: inline-block">
-                            <button class="btn btn-info" @click="promoteItem(index)">P</button>
-                            <button class="btn btn-danger" @click="removeArchItem(index)">X</button>
+                            <button class="btn btn-info" @click="promoteItem(item.id)">P</button>
+                            <button class="btn btn-danger" @click="removeArchItem(item.id)">X</button>
                         </div>
                     </li>
                 </ul>
 
                 <ul id="activeListUL">
                     <li v-for="(item, index) in items">
-                        <div v-bind:class="{ bought: item.inBasket }" style="width: 70%; display: inline-block">{{item.name}}</div>
+                        <div v-bind:class="{ bought: item.inBasket }" style="width: 70%; display: inline-block">
+                            {{item.name}}
+                        </div>
                         <div style="width: 10%; display: inline-block">{{item.qt}}</div>
                         <div v-if="!item.inBasket" style="display: inline-block">
-                            <button class="btn btn-success" @click="addToBasketView(index)">B</button>
-                            <button class="btn btn-info" @click="archiveItem(index)">A</button>
-                            <button class="btn btn-danger" @click="removeItem(index)">X</button>
+                            <button class="btn btn-success" @click="addToBasketView(item.id)">B</button>
+                            <button class="btn btn-info" @click="archiveItem(item.id)">A</button>
+                            <button class="btn btn-danger" @click="removeItem(item.id)">X</button>
                         </div>
                         <div v-if="item.inBasket" style="display: inline-block">
-                            <button class="btn btn-info" @click="removeFromBasket(index)">C</button>
+                            <button class="btn btn-info" @click="removeFromBasket(item.id)">C</button>
                         </div>
                     </li>
                 </ul>
@@ -111,11 +113,11 @@
 </div>
 
 <script type="text/javascript">
-<%--https://docs.spring.io/spring-security/site/docs/current/reference/html/csrf.html--%>
+    <%--https://docs.spring.io/spring-security/site/docs/current/reference/html/csrf.html--%>
     $(function () {
         var token = $("meta[name='_csrf']").attr("content");
         var header = $("meta[name='_csrf_header']").attr("content");
-        $(document).ajaxSend(function(e, xhr, options) {
+        $(document).ajaxSend(function (e, xhr, options) {
             xhr.setRequestHeader(header, token);
         });
     });
@@ -135,17 +137,19 @@
             itemPrice: '',
             itemSelectedIdx: ''
         },
-        created: function() {
+        created: function () {
             //do a login check
+            var self = this;
             console.log("ready vue");
-            $.get("auth/isAuth", function(data, status){
+            $.get("auth/isAuth", function (data, status) {
                 console.log("data: " + data);
                 console.log("status: " + status);
-                if("notAuth" != data){
+                if ("notAuth" != data) {
                     $("#accountDiv").hide();
                     $("#menuDiv").show();
                     $("#listDiv").show();
                     $("#itemNameId").focus();
+//                    self.items = $.parseJSON(data);
                     //todo load items
                 }
             });
@@ -161,13 +165,14 @@
                     type: "POST",
                     url: "i/item",
                     data: {name: self.itemName, qt: self.itemQt},
-                    success: function(data, status){
+                    success: function (data, status) {
                         console.log("data: " + data);
                         console.log("status: " + status);
+                        self.items = $.parseJSON(data);
                     }
                 });
 
-                self.items.push({name: self.itemName, qt: self.itemQt});
+//                self.items.push({name: self.itemName, qt: self.itemQt});
                 self.itemName = '';
                 self.itemQt = '';
                 $("#itemNameId").focus();
@@ -181,12 +186,19 @@
                         filter.push(self.items[i]);
                     }
                 }
-                $.ajax({ type: "DELETE", url: "i/item", data: {id: index}, success: function(data, status){
+
+                $.ajax({
+                    type: "DELETE",
+                    url: "i/item",
+                    data: JSON.stringify({id: index}),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data, status) {
                         console.log("data: " + data);
                         console.log("status: " + status);
+                        self.items = $.parseJSON(data);
                     }
                 });
-                self.items = filter;
+//                self.items = filter;
             },
             removeAllItems: function () {
                 // remove all items that are not already bought
@@ -197,12 +209,14 @@
                         filter.push(self.items[i]);
                     }
                 }
-                $.ajax({ type: "DELETE", url: "i/itemAll", success: function(data, status){
-                    console.log("data: " + data);
-                    console.log("status: " + status);
-                }
+                $.ajax({
+                    type: "DELETE", url: "i/itemAll", success: function (data, status) {
+                        console.log("data: " + data);
+                        console.log("status: " + status);
+                        self.items = $.parseJSON(data);
+                    }
                 });
-                self.items = filter;
+//                self.items = filter;
             },
             addToBasketView: function (index) {
                 // try to gather as much info about the item
@@ -226,7 +240,7 @@
                 var self = this;
 
                 var filter = [];
-                var cItem;
+                var cItem = {};
                 for (var i = 0; i < self.items.length; i++) {
                     if (i != self.itemSelectedIdx) {
                         filter.push(self.items[i]);
@@ -238,21 +252,23 @@
                 cItem.inBasket = true;
                 cItem.index = self.itemSelectedIdx;
                 filter.push(cItem);
-                self.items = filter;
+//                self.items = filter;
 
                 self.cancelAddToBasket();
 
                 $.ajax({
                     type: "POST",
                     url: "i/basket",
-                    data: {id: self.itemSelectedIdx, price: self.itemPrice},
-                    success: function(data, status){
+                    data: JSON.stringify({id: cItem.index, price: cItem.price}),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data, status) {
                         console.log("data: " + data);
                         console.log("status: " + status);
+                        self.items = $.parseJSON(data);
                     }
                 });
             },
-            removeFromBasket: function(index){
+            removeFromBasket: function (index) {
                 var self = this;
                 var filter = [];
                 var cItem;
@@ -264,19 +280,25 @@
                     }
                 }
                 // put the item in the old index in list
-                var cIndex = cItem.index;
+//                var cIndex = cItem.index;
+//
+//                delete cItem.inBasket;
+//                delete cItem.index;
+//
+//                filter.splice(cIndex, 0, cItem);
 
-                delete cItem.inBasket;
-                delete cItem.index;
+//                self.items = filter;
 
-                filter.splice(cIndex, 0, cItem);
-
-                self.items = filter;
-
-                $.ajax({ type: "DELETE", url: "i/basket", data: {id: index}, success: function(data, status){
-                    console.log("data: " + data);
-                    console.log("status: " + status);
-                }
+                $.ajax({
+                    type: "DELETE",
+                    url: "i/basket",
+                    data: JSON.stringify({id: index}),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data, status) {
+                        console.log("data: " + data);
+                        console.log("status: " + status);
+                        self.items = $.parseJSON(data);
+                    }
                 });
             },
             archiveItem: function (index) {
@@ -291,14 +313,15 @@
                         console.log('archived: ' + self.items[i].name + " - " + self.items[i].qt);
                     }
                 }
-                self.items = filter;
+//                self.items = filter;
                 $.ajax({
                     type: "POST",
                     url: "i/arch",
                     data: {id: index},
-                    success: function(data, status){
+                    success: function (data, status) {
                         console.log("data: " + data);
                         console.log("status: " + status);
+                        self.items = $.parseJSON(data);
                     }
                 });
             },
@@ -314,14 +337,15 @@
                     }
                 }
 
-                self.items = filter;
+//                self.items = filter;
                 $.ajax({
                     type: "POST",
                     url: "i/archAll",
                     data: {},
-                    success: function(data, status){
+                    success: function (data, status) {
                         console.log("data: " + data);
                         console.log("status: " + status);
+                        self.items = $.parseJSON(data);
                     }
                 });
             },
@@ -331,11 +355,11 @@
                 $("#addItemDiv").hide();
                 $("#listPriceDiv").show();
             },
-            cancelCloseList: function(){
+            cancelCloseList: function () {
                 $("#listPriceDiv").hide();
                 $("#addItemDiv").show();
             },
-            closeList: function(){
+            closeList: function () {
                 //todo save list and final list price
 
                 this.cancelCloseList();
@@ -345,7 +369,7 @@
             switchList: function () {
                 // switch between active and archived list
                 var self = this;
-                if(self.listName === 'active'){
+                if (self.listName === 'active') {
                     // switch to archived
                     self.listName = 'arch';
 
@@ -359,7 +383,18 @@
                     $("#archListUL").show();
                     $("#archListCtrl").show();
 
-                }else{
+                    $.ajax({
+                        type: "GET",
+                        url: "i/itemsArch",
+                        contentType: 'application/json; charset=utf-8',
+                        success: function (data, status) {
+                            console.log("data: " + data);
+                            console.log("status: " + status);
+                            self.archs = $.parseJSON(data);
+                        }
+                    });
+
+                } else {
                     // switch to active
                     self.listName = 'active';
 
@@ -370,6 +405,17 @@
 
                     $("#archListUL").hide();
                     $("#archListCtrl").hide();
+
+                    $.ajax({
+                        type: "GET",
+                        url: "i/items",
+                        contentType: 'application/json; charset=utf-8',
+                        success: function (data, status) {
+                            console.log("data: " + data);
+                            console.log("status: " + status);
+                            self.items = $.parseJSON(data);
+                        }
+                    });
                 }
             },
 
@@ -387,14 +433,15 @@
                         filter.push(self.archs[i]);
                     }
                 }
-                self.archs = filter;
+//                self.archs = filter;
                 $.ajax({
                     type: "POST",
                     url: "a/promote",
                     data: {id: index},
-                    success: function(data, status){
+                    success: function (data, status) {
                         console.log("data: " + data);
                         console.log("status: " + status);
+                        self.archs = $.parseJSON(data);
                     }
                 });
             },
@@ -405,18 +452,19 @@
                 for (var i = 0; i < self.archs.length; i++) {
                     self.items.push(self.archs[i]);
                 }
-                self.archs = [];
+//                self.archs = [];
                 $.ajax({
                     type: "POST",
                     url: "a/promoteAll",
                     data: {},
-                    success: function(data, status){
+                    success: function (data, status) {
                         console.log("data: " + data);
                         console.log("status: " + status);
+                        self.archs = $.parseJSON(data);
                     }
                 });
             },
-            removeArchItem: function(index){
+            removeArchItem: function (index) {
                 var self = this;
                 var filter = [];
                 for (var i = 0; i < self.archs.length; i++) {
@@ -424,20 +472,29 @@
                         filter.push(self.archs[i]);
                     }
                 }
-                self.archs = filter;
-                $.ajax({type: "DELETE", url: "a/clear", data: {id: index}, success: function (data, status) {
+//                self.archs = filter;
+                $.ajax({
+                    type: "DELETE",
+                    url: "a/clear",
+                    data: JSON.stringify({id: index}),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data, status) {
                         console.log("data: " + data);
                         console.log("status: " + status);
+                        self.archs = $.parseJSON(data);
                     }
                 });
             },
             clearArchived: function () {
                 // remove all archived
-                this.archs = [];
-                $.ajax({type: "DELETE", url: "a/clearAll", success: function (data, status) {
-                    console.log("data: " + data);
-                    console.log("status: " + status);
-                }
+//                this.archs = [];
+                var self = this;
+                $.ajax({
+                    type: "DELETE", url: "a/clearAll", success: function (data, status) {
+                        console.log("data: " + data);
+                        console.log("status: " + status);
+                        self.archs = $.parseJSON(data);
+                    }
                 });
             },
 
@@ -454,15 +511,12 @@
                     type: "POST",
                     url: "login",
                     data: {email: self.email, password: self.pwd},
-                    success: function(data, status){
+                    success: function (data, status) {
                         console.log("data: " + data);
                         console.log("status: " + status);
 
-                        if("notAuth" != data){
-                            $("#accountDiv").hide();
-                            $("#menuDiv").show();
-                            $("#listDiv").show();
-                            $("#itemNameId").focus();
+                        if ("notAuth" != data) {
+                            location.reload();
                         } else {
                             // user or pass incorect
                             errorMsg.show();
@@ -487,11 +541,11 @@
                     type: "POST",
                     url: "register",
                     data: {email: self.email, password: self.pwd},
-                    success: function(data, status){
+                    success: function (data, status) {
                         console.log("data: " + data);
                         console.log("status: " + status);
 
-                        if("ok" == data){
+                        if ("ok" == data) {
                             $("#accountDiv").hide();
                             $("#menuDiv").show();
                             $("#listDiv").show();
