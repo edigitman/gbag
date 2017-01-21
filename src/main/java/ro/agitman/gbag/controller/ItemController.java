@@ -17,12 +17,10 @@ import ro.agitman.gbag.service.ItemService;
  */
 @Controller
 @RequestMapping("/i")
-public class ItemController {
+public class ItemController extends AbstractController{
 
     @Autowired
     private ItemService itemService;
-
-    private Gson gson = new Gson();
 
     @RequestMapping(value = {"items"}, method = RequestMethod.GET)
     @ResponseBody
@@ -55,7 +53,7 @@ public class ItemController {
     @ResponseBody
     public String removeAllItems() {
         itemService.removeAllItems(getPrincipal());
-        return "[]";
+        return gson.toJson(itemService.getItems(getPrincipal()));
     }
 
 
@@ -93,18 +91,5 @@ public class ItemController {
         //TODO ---
 //        itemService.addItem(item);
         return "";
-    }
-
-
-    protected String getPrincipal() {
-        String userName = null;
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (principal instanceof UserDetails) {
-            userName = ((UserDetails) principal).getUsername();
-        } else {
-            userName = principal.toString();
-        }
-        return userName;
     }
 }

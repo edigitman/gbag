@@ -15,13 +15,13 @@ import java.util.List;
 @Service
 public class ItemService {
 
-    private final String GET_ITEMS = "select * from items where owner = :owner and arch = false";
+    private final String GET_ITEMS = "select * from items where owner = :owner and arch = false order by inbasket";
     private final String GET_ARCH_ITEMS = "select * from items where owner = :owner and arch = true";
     private final String INSERT_ITEM = "insert into items (owner, name, qt) values (:owner, :name, :qt)";
     private final String DELETE_ITEM = "delete from items where id = :id and owner = :owner and inbasket = false";
     private final String DELETE_ALL_ITEMS = "delete from items where owner = :owner and inbasket = false";
     private final String BASKET_ADD_ITEM = "update items set inbasket = true, price = :price where id = :id and owner = :owner";
-    private final String BASKET_REMOVE_ITEM = "update items set inbasket = false where id = :id and owner = :owner";
+    private final String BASKET_REMOVE_ITEM = "update items set inbasket = false, price = 0 where id = :id and owner = :owner";
     private final String ARCHIVE_ITEM = "update items set arch = :arch where id = :id and owner = :owner and inbasket = false";
     private final String ARCHIVE_ALL_ITEMS = "update items set arch = :arch where owner = :owner and inbasket = false";
     private final String CLEAR_ARCH_ITEM = "delete from items where arch = true and owner = :owner and id = :id";

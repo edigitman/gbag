@@ -39,7 +39,7 @@
         </div>
         <div id="menuDiv" class="col-md-8 col-md-offset-2" style="text-align: center" hidden>
             <a class="hyperlink" href="#" @click="switchList">{{listName}}</a> |
-            <a class="hyperlink" href="reports">Reports</a> |
+            <%--<a class="hyperlink" href="reports">Reports</a> |--%>
             <a class="hyperlink" href="logout"> Logout</a>
         </div>
     </div>
@@ -79,7 +79,8 @@
                     </li>
                 </ul>
 
-                <ul id="activeListUL">
+                <div id="activeListUL">
+                <ul>
                     <li v-for="(item, index) in items">
                         <div v-bind:class="{ bought: item.inBasket }" style="width: 70%; display: inline-block">
                             {{item.name}}
@@ -92,9 +93,16 @@
                         </div>
                         <div v-if="item.inBasket" style="display: inline-block">
                             <button class="btn btn-info" @click="removeFromBasket(item.id)">C</button>
+                            <div style="display: inline-block">{{item.price}}</div>
                         </div>
                     </li>
                 </ul>
+                    <div class="row">
+                        <div style="text-align: right" class="col-md-2 col-md-offset-9">
+                            total: {{totalListPrice}}
+                        </div>
+                    </div>
+                </div>
 
                 <div style="text-align: center" id="activeListCtrl">
                     <button class="btn btn-success" v-if="items.length > 0" @click="closeListView()">Close List</button>
@@ -137,6 +145,20 @@
             itemPrice: '',
             itemSelectedIdx: ''
         },
+        computed: {
+            // a computed getter
+            totalListPrice: function () {
+                var self = this;
+                // `this` points to the vm instance
+                var total = 0;
+                $.each(self.items, function( index, value ) {
+                    if(value.price){
+                        total = total + value.price;
+                    }
+                });
+                return total;
+            }
+        },
         created: function () {
             //do a login check
             var self = this;
@@ -149,7 +171,7 @@
                     $("#menuDiv").show();
                     $("#listDiv").show();
                     $("#itemNameId").focus();
-//                    self.items = $.parseJSON(data);
+                    self.items = $.parseJSON(data);
                     //todo load items
                 }
             });
