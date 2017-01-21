@@ -20,6 +20,8 @@
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
             crossorigin="anonymous"></script>
 
+    <meta name="viewport" content="width-width, initial-scale=1.0"/>
+
     <meta name="_csrf" content="${_csrf.token}"/>
     <!-- default header name is X-CSRF-TOKEN -->
     <meta name="_csrf_header" content="${_csrf.headerName}"/>
@@ -68,35 +70,36 @@
             </div>
 
             <div style="margin-top: 5px">
-                <ul id="archListUL" hidden>
-                    <li v-for="(item, index) in archs">
-                        <div style="width: 70%; display: inline-block">{{item.name}}</div>
-                        <div style="width: 10%; display: inline-block">{{item.qt}}</div>
-                        <div style="display: inline-block">
+                <div id="archListUL" hidden>
+                    <div v-for="(item, index) in archs" class="row">
+                        <div class="col-xs-6" style="display: inline-block">{{item.name}}</div>
+                        <div class="col-sx-2" style="display: inline-block">{{item.qt}}</div>
+                        <div class="col-xs-4" style="display: inline-block">
                             <button class="btn btn-info" @click="promoteItem(item.id)">P</button>
                             <button class="btn btn-danger" @click="removeArchItem(item.id)">X</button>
                         </div>
-                    </li>
-                </ul>
+                    </div>
+                </div>
 
                 <div id="activeListUL">
-                <ul>
-                    <li v-for="(item, index) in items">
-                        <div v-bind:class="{ bought: item.inBasket }" style="width: 70%; display: inline-block">
+
+                <div id="listOfItems" style="margin-top: 5px">
+                    <div class="row" v-for="(item, index) in items">
+                        <div v-bind:class="{ bought: item.inBasket }" class="col-xs-6"  style="display: inline-block">
                             {{item.name}}
                         </div>
-                        <div style="width: 10%; display: inline-block">{{item.qt}}</div>
-                        <div v-if="!item.inBasket" style="display: inline-block">
+                        <div class="col-xs-1" style="display: inline-block">{{item.qt}}</div>
+                        <div v-if="!item.inBasket" class="col-xs-5" style="display: inline-block">
                             <button class="btn btn-success" @click="addToBasketView(item.id)">B</button>
                             <button class="btn btn-info" @click="archiveItem(item.id)">A</button>
                             <button class="btn btn-danger" @click="removeItem(item.id)">X</button>
                         </div>
-                        <div v-if="item.inBasket" style="display: inline-block">
+                        <div v-if="item.inBasket" class="col-xs-5" style="display: inline-block">
                             <button class="btn btn-info" @click="removeFromBasket(item.id)">C</button>
                             <div style="display: inline-block">{{item.price}}</div>
                         </div>
-                    </li>
-                </ul>
+                    </div>
+                </div>
                     <div class="row">
                         <div style="text-align: right" class="col-md-2 col-md-offset-9">
                             total: {{totalListPrice}}
