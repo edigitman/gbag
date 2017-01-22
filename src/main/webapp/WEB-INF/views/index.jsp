@@ -20,7 +20,7 @@
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
             crossorigin="anonymous"></script>
 
-    <meta name="viewport" content="width-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
     <meta name="_csrf" content="${_csrf.token}"/>
     <!-- default header name is X-CSRF-TOKEN -->
@@ -31,11 +31,18 @@
 <div class="container-fluid" id="app">
 
     <div class="row">
-        <div id="accountDiv" class="col-md-8 col-md-offset-2">
+        <div id="accountDiv" class="col-md-4 col-md-offset-4">
             <span id="invalidCredentials" hidden>Invalid credentials - Try to register <br/></span>
             <span id="cannotRegister" hidden>Account already used <a href="#">Recover password</a> <br/></span>
-            Email <input v-model="email" type="text">
-            Password <input v-model="pwd" type="password">
+            <div class="form-group">
+                <label for="exampleInputEmail1">Email address</label>
+                <input type="email" v-model="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword1">Password</label>
+                <input type="password" v-model="pwd" class="form-control" id="exampleInputPassword1"
+                       placeholder="Password">
+            </div>
             <button class="btn btn-default" @click="login">Login</button>
             <a href="#" @click="register">Register</a>
         </div>
@@ -50,20 +57,31 @@
 
         <div class="col-md-8 col-md-offset-2" style="background-color: antiquewhite; margin-top: 10px">
 
-            <div style="text-align: center; margin-top: 5px" id="addItemDiv">
-                Item <input id="itemNameId" v-model="itemName" type="text">
-                qt. <input v-model="itemQt" style="width: 50px" type="number" min="0.0">
-                <button class="btn btn-info" @click="addItem">Add</button>
+            <div class="row" style="text-align: center; margin-top: 5px" id="addItemDiv">
+                <div class="col-md-8 col-xs-8">
+                    <input id="itemNameId" v-model="itemName" style="width: 100%" type="text" placeholder="Item">
+                </div>
+                <div class="col-md-2 col-xs-2">
+                    <input v-model="itemQt" style="width: 100%" type="number" min="0.0" placeholder="qt.">
+                </div>
+                <div class="col-md-2 col-xs-2">
+                    <button class="btn btn-info" @click="addItem">Add</button>
+                </div>
             </div>
             <div style="text-align: center; margin-top: 5px" id="activeListItemActionsDiv">
                 <div id="itemPriceDiv" hidden>
-                    Price <input id="itemPrice" v-model="itemPrice" type="text">
+                    Price <input id="itemPrice" v-model="itemPrice" type="number">
                     <button class="btn btn-success" @click="addToBasket">B</button>
                     <button class="btn btn-danger" @click="cancelAddToBasket">C</button>
                 </div>
 
-                <div id="listPriceDiv" hidden>
-                    List price<input id="listPrice" v-model="itemPrice" type="text">
+                <div id="listPriceDiv" hidden class="row">
+                    <div class="col-md-12">
+                        List price<input id="listPrice" v-model="listPrice" type="number">
+                    </div>
+                    <div class="col-md-12">
+                        Shop <input v-model="shopName" type="text">
+                    </div>
                     <button class="btn btn-success" @click="closeList">A</button>
                     <button class="btn btn-danger" @click="cancelCloseList">C</button>
                 </div>
@@ -83,23 +101,24 @@
 
                 <div id="activeListUL">
 
-                <div id="listOfItems" style="margin-top: 5px">
-                    <div class="row" v-for="(item, index) in items">
-                        <div v-bind:class="{ bought: item.inBasket }" class="col-xs-6"  style="display: inline-block">
-                            {{item.name}}
-                        </div>
-                        <div class="col-xs-1" style="display: inline-block">{{item.qt}}</div>
-                        <div v-if="!item.inBasket" class="col-xs-5" style="display: inline-block">
-                            <button class="btn btn-success" @click="addToBasketView(item.id)">B</button>
-                            <button class="btn btn-info" @click="archiveItem(item.id)">A</button>
-                            <button class="btn btn-danger" @click="removeItem(item.id)">X</button>
-                        </div>
-                        <div v-if="item.inBasket" class="col-xs-5" style="display: inline-block">
-                            <button class="btn btn-info" @click="removeFromBasket(item.id)">C</button>
-                            <div style="display: inline-block">{{item.price}}</div>
+                    <div id="listOfItems" style="margin-top: 5px">
+                        <div class="row" v-for="(item, index) in items">
+                            <div v-bind:class="{ bought: item.inBasket }" class="col-xs-6"
+                                 style="display: inline-block">
+                                {{item.name}}
+                            </div>
+                            <div class="col-xs-1" style="display: inline-block">{{item.qt}}</div>
+                            <div v-if="!item.inBasket" class="col-xs-5" style="display: inline-block">
+                                <button class="btn btn-success" @click="addToBasketView(item.id)">B</button>
+                                <button class="btn btn-info" @click="archiveItem(item.id)">A</button>
+                                <button class="btn btn-danger" @click="removeItem(item.id)">X</button>
+                            </div>
+                            <div v-if="item.inBasket" class="col-xs-5" style="display: inline-block">
+                                <button class="btn btn-info" @click="removeFromBasket(item.id)">C</button>
+                                <div style="display: inline-block">{{item.price}}</div>
+                            </div>
                         </div>
                     </div>
-                </div>
                     <div class="row">
                         <div style="text-align: right" class="col-md-2 col-md-offset-9">
                             total: {{totalListPrice}}
@@ -142,6 +161,7 @@
             pwd: '',
             listName: 'active',
             listPrice: '',
+            shopName: '',
 
             itemName: '',
             itemQt: '',
@@ -154,8 +174,8 @@
                 var self = this;
                 // `this` points to the vm instance
                 var total = 0;
-                $.each(self.items, function( index, value ) {
-                    if(value.price){
+                $.each(self.items, function (index, value) {
+                    if (value.price) {
                         total = total + value.price;
                     }
                 });
@@ -386,6 +406,17 @@
             },
             closeList: function () {
                 //todo save list and final list price
+                var self = this;
+                $.ajax({
+                    type: "POST",
+                    url: "i/closeList",
+                    data: {price: self.listPrice, shop: self.shopName},
+                    success: function (data, status) {
+                        console.log("data: " + data);
+                        console.log("status: " + status);
+                        self.items = $.parseJSON(data);
+                    }
+                });
 
                 this.cancelCloseList();
             },

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
+import ro.agitman.gbag.model.ClosedListModel;
 import ro.agitman.gbag.model.ItemModel;
 import ro.agitman.gbag.model.MyUser;
 
@@ -15,25 +16,26 @@ import java.util.List;
 @Service
 public class ItemService {
 
-    private final String GET_ITEMS = "select * from items where owner = :owner and arch = false order by inbasket";
-    private final String GET_ARCH_ITEMS = "select * from items where owner = :owner and arch = true";
+    private final String GET_ITEMS = "select * from items where owner = :owner and arch = false and bought = false order by inbasket";
+    private final String GET_ARCH_ITEMS = "select * from items where owner = :owner and arch = true and bought = false";
     private final String INSERT_ITEM = "insert into items (owner, name, qt) values (:owner, :name, :qt)";
     private final String DELETE_ITEM = "delete from items where id = :id and owner = :owner and inbasket = false";
-    private final String DELETE_ALL_ITEMS = "delete from items where owner = :owner and inbasket = false";
+    private final String DELETE_ALL_ITEMS = "delete from items where owner = :owner and inbasket = false and bought = false";
     private final String BASKET_ADD_ITEM = "update items set inbasket = true, price = :price where id = :id and owner = :owner";
     private final String BASKET_REMOVE_ITEM = "update items set inbasket = false, price = 0 where id = :id and owner = :owner";
     private final String ARCHIVE_ITEM = "update items set arch = :arch where id = :id and owner = :owner and inbasket = false";
-    private final String ARCHIVE_ALL_ITEMS = "update items set arch = :arch where owner = :owner and inbasket = false";
+    private final String ARCHIVE_ALL_ITEMS = "update items set arch = :arch where owner = :owner and inbasket = false and bought = false";
     private final String CLEAR_ARCH_ITEM = "delete from items where arch = true and owner = :owner and id = :id";
-    private final String CLEAR_ALL_ARCH_ITEMS = "delete from items where arch = true and owner = :owner";
-
+    private final String CLEAR_ALL_ARCH_ITEMS = "delete from items where arch = true and owner = :owner and bought = false";
+    private final String INSERT_CLOSED_LIST = "insert into closedlist (shop, price, owner) values(:shop, :price, :owner)";
+    private final String UPDATE_CLOSED_LIST_ITEMS = "update items set listid = :listid, bought = true where owner = :owner and bought = false";
 
     @Autowired
     private Sql2o sql2o;
     @Autowired
     private UserService userService;
 
-    public void addItem(ItemModel item, String email){
+    public void addItem(ItemModel item, String email) {
         MyUser user = userService.getByEmail(email);
 
         try (Connection con = sql2o.open()) {
@@ -44,7 +46,7 @@ public class ItemService {
         }
     }
 
-    public void removeItem(Long id, String email){
+    public void removeItem(Long id, String email) {
         MyUser user = userService.getByEmail(email);
 
         try (Connection con = sql2o.open()) {
@@ -54,7 +56,7 @@ public class ItemService {
         }
     }
 
-    public void removeAllItems(String email){
+    public void removeAllItems(String email) {
         MyUser user = userService.getByEmail(email);
 
         try (Connection con = sql2o.open()) {
@@ -63,7 +65,7 @@ public class ItemService {
         }
     }
 
-    public void addItemToBasket(ItemModel item, String email){
+    public void addItemToBasket(ItemModel item, String email) {
         MyUser user = userService.getByEmail(email);
 
         try (Connection con = sql2o.open()) {
@@ -74,7 +76,7 @@ public class ItemService {
         }
     }
 
-    public void removeItemFromBasket(ItemModel item, String email){
+    public void removeItemFromBasket(ItemModel item, String email) {
         MyUser user = userService.getByEmail(email);
 
         try (Connection con = sql2o.open()) {
@@ -84,7 +86,7 @@ public class ItemService {
         }
     }
 
-    public void archiveItem(Long id, String email){
+    public void archiveItem(Long id, String email) {
         MyUser user = userService.getByEmail(email);
 
         try (Connection con = sql2o.open()) {
@@ -95,7 +97,7 @@ public class ItemService {
         }
     }
 
-    public void archiveAllItems(String email){
+    public void archiveAllItems(String email) {
         MyUser user = userService.getByEmail(email);
 
         try (Connection con = sql2o.open()) {
@@ -105,7 +107,7 @@ public class ItemService {
         }
     }
 
-    public void promoteItem(Long id, String email){
+    public void promoteItem(Long id, String email) {
         MyUser user = userService.getByEmail(email);
 
         try (Connection con = sql2o.open()) {
@@ -116,7 +118,7 @@ public class ItemService {
         }
     }
 
-    public void promoteAllItems(String email){
+    public void promoteAllItems(String email) {
         MyUser user = userService.getByEmail(email);
 
         try (Connection con = sql2o.open()) {
@@ -126,7 +128,7 @@ public class ItemService {
         }
     }
 
-    public void clearArchItem(Long id, String email){
+    public void clearArchItem(Long id, String email) {
         MyUser user = userService.getByEmail(email);
 
         try (Connection con = sql2o.open()) {
@@ -136,7 +138,7 @@ public class ItemService {
         }
     }
 
-    public void clearAllArchItems(String email){
+    public void clearAllArchItems(String email) {
         MyUser user = userService.getByEmail(email);
 
         try (Connection con = sql2o.open()) {
@@ -145,7 +147,7 @@ public class ItemService {
         }
     }
 
-    public List<ItemModel> getItems(String email){
+    public List<ItemModel> getItems(String email) {
         MyUser user = userService.getByEmail(email);
 
         try (Connection con = sql2o.open()) {
@@ -154,7 +156,7 @@ public class ItemService {
         }
     }
 
-    public List<ItemModel> getArchItems(String email){
+    public List<ItemModel> getArchItems(String email) {
         MyUser user = userService.getByEmail(email);
 
         try (Connection con = sql2o.open()) {
@@ -163,9 +165,22 @@ public class ItemService {
         }
     }
 
-    /**
-     * closeList
-     */
+    public void closeList(ClosedListModel closedList, String principal) {
+        MyUser user = userService.getByEmail(principal);
 
 
+        try (Connection con = sql2o.beginTransaction()) {
+            Integer id = (Integer) con.createQuery(INSERT_CLOSED_LIST, true).
+                    addParameter("shop", closedList.getShop()).
+                    addParameter("price", closedList.getPrice()).
+                    addParameter("owner", user.getId()).executeUpdate().getKey();
+
+
+            con.createQuery(UPDATE_CLOSED_LIST_ITEMS).
+                    addParameter("listid", id).
+                    addParameter("owner", user.getId()).executeUpdate();
+
+            con.commit();
+        }
+    }
 }

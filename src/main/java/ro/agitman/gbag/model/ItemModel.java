@@ -15,6 +15,7 @@ public class ItemModel {
     private Boolean inBasket;
     private BigDecimal price;
     private Boolean arch;
+    private Boolean bought;
     private Long listId;
     private Date createDate;
 
@@ -88,5 +89,13 @@ public class ItemModel {
 
     public void setArch(Boolean arch) {
         this.arch = arch;
+    }
+
+    public Boolean getBought() {
+        return bought;
+    }
+
+    public void setBought(Boolean bought) {
+        this.bought = bought;
     }
 }

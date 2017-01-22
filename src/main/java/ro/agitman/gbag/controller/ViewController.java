@@ -7,6 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -33,6 +34,8 @@ public class ViewController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private PasswordEncoder encoder;
 
     // Navigation
 
@@ -69,7 +72,10 @@ public class ViewController {
             List<GrantedAuthority> authorities = new ArrayList<>();
             authorities.add(new SimpleGrantedAuthority("user"));
 
-            Authentication auth = new UsernamePasswordAuthenticationToken(myUser.getEmail(), myUser.getPassword(), authorities);
+            Authentication auth = new UsernamePasswordAuthenticationToken(
+                    myUser.getEmail().toLowerCase(),
+                    encoder.encode(myUser.getPassword()),
+                    authorities);
 
             SecurityContextHolder.getContext().setAuthentication(auth);
 

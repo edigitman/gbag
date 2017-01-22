@@ -23,7 +23,7 @@ public class UserService {
     public MyUser getByEmail(String email) {
         try (Connection con = sql2o.open()) {
             return con.createQueryWithParams(MyUserDetailsService.SELECT_USER)
-                    .addParameter("email", email).executeAndFetchFirst(MyUser.class);
+                    .addParameter("email", email.toLowerCase()).executeAndFetchFirst(MyUser.class);
         }
     }
 
@@ -39,7 +39,7 @@ public class UserService {
 
         try (Connection con = sql2o.open()) {
             MyUser dbUser = con.createQueryWithParams(MyUserDetailsService.SELECT_USER)
-                    .addParameter("email", user.getEmail()).executeAndFetchFirst(MyUser.class);
+                    .addParameter("email", user.getEmail().toLowerCase()).executeAndFetchFirst(MyUser.class);
 
             return dbUser == null;
         }
@@ -48,7 +48,7 @@ public class UserService {
     public void insertUser(MyUser user) {
         try (Connection con = sql2o.open()) {
             con.createQueryWithParams(INSERT_USER)
-                    .addParameter("email", user.getEmail())
+                    .addParameter("email", user.getEmail().toLowerCase())
                     .addParameter("password", encoder.encode(user.getPassword()))
                     .addParameter("enabled", true)
                     .addParameter("role", "user").executeUpdate();

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import ro.agitman.gbag.model.ClosedListModel;
 import ro.agitman.gbag.model.ItemModel;
 import ro.agitman.gbag.service.ItemService;
 
@@ -17,7 +18,7 @@ import ro.agitman.gbag.service.ItemService;
  */
 @Controller
 @RequestMapping("/i")
-public class ItemController extends AbstractController{
+public class ItemController extends AbstractController {
 
     @Autowired
     private ItemService itemService;
@@ -87,9 +88,9 @@ public class ItemController extends AbstractController{
 
     @RequestMapping(value = {"closeList"}, method = RequestMethod.POST)
     @ResponseBody
-    public String closeList(ItemModel item) {
-        //TODO ---
-//        itemService.addItem(item);
-        return "";
+    public String closeList(ClosedListModel closedList) {
+
+        itemService.closeList(closedList, getPrincipal());
+        return "[]";
     }
 }

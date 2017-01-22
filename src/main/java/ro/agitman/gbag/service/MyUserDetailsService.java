@@ -33,7 +33,7 @@ public class MyUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         try (Connection con = sql2o.open()) {
-            MyUser user = con.createQueryWithParams(SELECT_USER).addParameter("email", username).executeAndFetchFirst(MyUser.class);
+            MyUser user = con.createQueryWithParams(SELECT_USER).addParameter("email", username.toLowerCase()).executeAndFetchFirst(MyUser.class);
 
             if (user == null) {
                 throw new UsernameNotFoundException("User " + username + " not found.");

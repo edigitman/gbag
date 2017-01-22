@@ -35,3 +35,13 @@ CREATE TABLE shippingList (
   total      NUMBER(10, 4),
   createDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+alter table items add column bought boolean after arch;
+
+create TABLE closedlist (
+  id         INT       AUTO_INCREMENT PRIMARY KEY,
+  owner      INT,
+  shop       VARCHAR(50),
+  price      NUMBER(10, 4),
+  createDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
