@@ -59,10 +59,10 @@
 
             <div class="row" style="text-align: center; margin-top: 5px" id="addItemDiv">
                 <div class="col-md-8 col-xs-8">
-                    <input id="itemNameId" v-model="itemName" @keyup.13="$('#itemQuantity').focus()" style="width: 100%" type="text" placeholder="Item">
+                    <input id="itemNameId" v-model="itemName" @keyup.13="passFocusTo('itemQuantity')" style="width: 100%" type="text" placeholder="Item">
                 </div>
                 <div class="col-md-2 col-xs-2">
-                    <input id="itemQuantity" v-model="itemQt" @keyup.13="$('#addItemBtn').focus()" style="width: 100%" type="number" min="0.0" placeholder="qt.">
+                    <input id="itemQuantity" v-model="itemQt" @keyup.13="passFocusTo('addItemBtn')" style="width: 100%" type="number" min="0.0" placeholder="qt.">
                 </div>
                 <div class="col-md-2 col-xs-2">
                     <button id="addItemBtn" class="btn btn-info" @click="addItem">Add</button>
@@ -70,17 +70,17 @@
             </div>
             <div style="text-align: center; margin-top: 5px" id="activeListItemActionsDiv">
                 <div id="itemPriceDiv" hidden>
-                    Price <input id="itemPrice" v-model="itemPrice" @keyup.13="$('#addToBasketBtn').focus()" type="number">
+                    Price <input id="itemPrice" v-model="itemPrice" @keyup.13="passFocusTo('addToBasketBtn')" type="number">
                     <button id="addToBasketBtn" class="btn btn-success" @click="addToBasket">B</button>
                     <button class="btn btn-danger" @click="cancelAddToBasket">C</button>
                 </div>
 
                 <div id="listPriceDiv" hidden class="row">
                     <div class="col-md-12">
-                        List price<input id="listPrice" v-model="listPrice" @keyup.13="$('#shopNameInput').focus()" type="number">
+                        List price<input id="listPrice" v-model="listPrice" @keyup.13="passFocusTo('shopNameInput')" type="number">
                     </div>
                     <div class="col-md-12">
-                        Shop <input id="shopNameInput" v-model="shopName" @keyup.13="$('#closeListBtn').focus()" type="text">
+                        Shop <input id="shopNameInput" v-model="shopName" @keyup.13="passFocusTo('closeListBtn')" type="text">
                     </div>
                     <button id="closeListBtn" class="btn btn-success" @click="closeList">A</button>
                     <button class="btn btn-danger" @click="cancelCloseList">C</button>
@@ -551,6 +551,10 @@
                         self.archs = data;
                     }
                 });
+            },
+
+            passFocusTo: function(element){
+                $('#'+element).focus();
             },
 
             // account actions
