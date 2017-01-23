@@ -212,7 +212,7 @@
                     success: function (data, status) {
                         console.log("data: " + data);
                         console.log("status: " + status);
-                        self.items = $.parseJSON(data);
+                        self.items = data;
                     }
                 });
 
@@ -239,7 +239,7 @@
                     success: function (data, status) {
                         console.log("data: " + data);
                         console.log("status: " + status);
-                        self.items = $.parseJSON(data);
+                        self.items = data;
                     }
                 });
 //                self.items = filter;
@@ -257,7 +257,7 @@
                     type: "DELETE", url: "i/itemAll", success: function (data, status) {
                         console.log("data: " + data);
                         console.log("status: " + status);
-                        self.items = $.parseJSON(data);
+                        self.items = data;
                     }
                 });
 //                self.items = filter;
@@ -308,7 +308,7 @@
                     success: function (data, status) {
                         console.log("data: " + data);
                         console.log("status: " + status);
-                        self.items = $.parseJSON(data);
+                        self.items = data;
                     }
                 });
             },
@@ -341,7 +341,7 @@
                     success: function (data, status) {
                         console.log("data: " + data);
                         console.log("status: " + status);
-                        self.items = $.parseJSON(data);
+                        self.items = data;
                     }
                 });
             },
@@ -365,7 +365,7 @@
                     success: function (data, status) {
                         console.log("data: " + data);
                         console.log("status: " + status);
-                        self.items = $.parseJSON(data);
+                        self.items = data;
                     }
                 });
             },
@@ -389,7 +389,7 @@
                     success: function (data, status) {
                         console.log("data: " + data);
                         console.log("status: " + status);
-                        self.items = $.parseJSON(data);
+                        self.items = data;
                     }
                 });
             },
@@ -413,7 +413,7 @@
                     success: function (data, status) {
                         console.log("data: " + data);
                         console.log("status: " + status);
-                        self.items = $.parseJSON(data);
+                        self.items = data;
                     }
                 });
 
@@ -445,7 +445,7 @@
                         success: function (data, status) {
                             console.log("data: " + data);
                             console.log("status: " + status);
-                            self.archs = $.parseJSON(data);
+                            self.archs = data;
                         }
                     });
 
@@ -468,7 +468,7 @@
                         success: function (data, status) {
                             console.log("data: " + data);
                             console.log("status: " + status);
-                            self.items = $.parseJSON(data);
+                            self.items = data;
                         }
                     });
                 }
@@ -496,7 +496,7 @@
                     success: function (data, status) {
                         console.log("data: " + data);
                         console.log("status: " + status);
-                        self.archs = $.parseJSON(data);
+                        self.archs = data;
                     }
                 });
             },
@@ -515,7 +515,7 @@
                     success: function (data, status) {
                         console.log("data: " + data);
                         console.log("status: " + status);
-                        self.archs = $.parseJSON(data);
+                        self.archs = data;
                     }
                 });
             },
@@ -536,7 +536,7 @@
                     success: function (data, status) {
                         console.log("data: " + data);
                         console.log("status: " + status);
-                        self.archs = $.parseJSON(data);
+                        self.archs = data;
                     }
                 });
             },
@@ -548,7 +548,7 @@
                     type: "DELETE", url: "a/clearAll", success: function (data, status) {
                         console.log("data: " + data);
                         console.log("status: " + status);
-                        self.archs = $.parseJSON(data);
+                        self.archs = data;
                     }
                 });
             },

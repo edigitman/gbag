@@ -23,34 +23,34 @@ public class ItemController extends AbstractController {
     @Autowired
     private ItemService itemService;
 
-    @RequestMapping(value = {"items"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"items"}, method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     @ResponseBody
     public String getItems() {
         return gson.toJson(itemService.getItems(getPrincipal()));
     }
 
-    @RequestMapping(value = {"itemsArch"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"itemsArch"}, method = RequestMethod.GET, produces = "application/json; charset=utf-8")
     @ResponseBody
     public String getItemsArch() {
         return gson.toJson(itemService.getArchItems(getPrincipal()));
     }
 
 
-    @RequestMapping(value = {"item"}, method = RequestMethod.POST)
+    @RequestMapping(value = {"item"}, method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ResponseBody
     public String addItem(ItemModel item) {
         itemService.addItem(item, getPrincipal());
         return gson.toJson(itemService.getItems(getPrincipal()));
     }
 
-    @RequestMapping(value = {"item"}, method = RequestMethod.DELETE)
+    @RequestMapping(value = {"item"}, method = RequestMethod.DELETE, produces = "application/json; charset=utf-8")
     @ResponseBody
     public String removeItem(@RequestBody ItemModel item) {
         itemService.removeItem(item.getId(), getPrincipal());
         return gson.toJson(itemService.getItems(getPrincipal()));
     }
 
-    @RequestMapping(value = {"itemAll"}, method = RequestMethod.DELETE)
+    @RequestMapping(value = {"itemAll"}, method = RequestMethod.DELETE, produces = "application/json; charset=utf-8")
     @ResponseBody
     public String removeAllItems() {
         itemService.removeAllItems(getPrincipal());
@@ -58,35 +58,35 @@ public class ItemController extends AbstractController {
     }
 
 
-    @RequestMapping(value = {"basket"}, method = RequestMethod.POST)
+    @RequestMapping(value = {"basket"}, method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ResponseBody
     public String addItemToBasket(@RequestBody ItemModel item) {
         itemService.addItemToBasket(item, getPrincipal());
         return gson.toJson(itemService.getItems(getPrincipal()));
     }
 
-    @RequestMapping(value = {"basket"}, method = RequestMethod.DELETE)
+    @RequestMapping(value = {"basket"}, method = RequestMethod.DELETE, produces = "application/json; charset=utf-8")
     @ResponseBody
     public String removeItemFromBasket(@RequestBody ItemModel item) {
         itemService.removeItemFromBasket(item, getPrincipal());
         return gson.toJson(itemService.getItems(getPrincipal()));
     }
 
-    @RequestMapping(value = {"arch"}, method = RequestMethod.POST)
+    @RequestMapping(value = {"arch"}, method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ResponseBody
     public String archiveItem(ItemModel item) {
         itemService.archiveItem(item.getId(), getPrincipal());
         return gson.toJson(itemService.getItems(getPrincipal()));
     }
 
-    @RequestMapping(value = {"archAll"}, method = RequestMethod.POST)
+    @RequestMapping(value = {"archAll"}, method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ResponseBody
     public String archiveAllItems() {
         itemService.archiveAllItems(getPrincipal());
         return gson.toJson(itemService.getItems(getPrincipal()));
     }
 
-    @RequestMapping(value = {"closeList"}, method = RequestMethod.POST)
+    @RequestMapping(value = {"closeList"}, method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ResponseBody
     public String closeList(ClosedListModel closedList) {
 

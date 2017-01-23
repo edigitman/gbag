@@ -18,7 +18,7 @@ public class ItemService {
 
     private final String GET_ITEMS = "select * from items where owner = :owner and arch = false and bought = false order by inbasket";
     private final String GET_ARCH_ITEMS = "select * from items where owner = :owner and arch = true and bought = false";
-    private final String INSERT_ITEM = "insert into items (owner, name, qt) values (:owner, :name, :qt)";
+    private final String INSERT_ITEM = "insert into items (owner, name, qt, bought) values (:owner, :name, :qt, :bought)";
     private final String DELETE_ITEM = "delete from items where id = :id and owner = :owner and inbasket = false";
     private final String DELETE_ALL_ITEMS = "delete from items where owner = :owner and inbasket = false and bought = false";
     private final String BASKET_ADD_ITEM = "update items set inbasket = true, price = :price where id = :id and owner = :owner";
@@ -42,6 +42,7 @@ public class ItemService {
             con.createQueryWithParams(INSERT_ITEM).
                     addParameter("owner", user.getId()).
                     addParameter("name", item.getName()).
+                    addParameter("bought", false).
                     addParameter("qt", item.getQt()).executeUpdate();
         }
     }

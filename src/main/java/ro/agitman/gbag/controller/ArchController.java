@@ -37,14 +37,14 @@ public class ArchController {
         return gson.toJson(itemService.getArchItems(getPrincipal()));
     }
 
-    @RequestMapping(value = {"clear"}, method = RequestMethod.DELETE)
+    @RequestMapping(value = {"clear"}, method = RequestMethod.DELETE, produces = "application/json; charset=utf-8")
     @ResponseBody
     public String clearItem(@RequestBody ItemModel item) {
         itemService.clearArchItem(item.getId(), getPrincipal());
         return gson.toJson(itemService.getArchItems(getPrincipal()));
     }
 
-    @RequestMapping(value = {"clearAll"}, method = RequestMethod.DELETE)
+    @RequestMapping(value = {"clearAll"}, method = RequestMethod.DELETE, produces = "application/json; charset=utf-8")
     @ResponseBody
     public String clearAllItems() {
         itemService.clearAllArchItems(getPrincipal());
