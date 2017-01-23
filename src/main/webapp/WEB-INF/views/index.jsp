@@ -36,12 +36,11 @@
             <span id="cannotRegister" hidden>Account already used <a href="#">Recover password</a> <br/></span>
             <div class="form-group">
                 <label for="exampleInputEmail1">Email address</label>
-                <input type="email" v-model="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+                <input type="email" v-model="email" @keyup.13="passFocusTo('passwordInput')" class="form-control" id="exampleInputEmail1" placeholder="Email">
             </div>
             <div class="form-group">
-                <label for="exampleInputPassword1">Password</label>
-                <input type="password" v-model="pwd" class="form-control" id="exampleInputPassword1"
-                       placeholder="Password">
+                <label for="passwordInput">Password</label>
+                <input id="passwordInput" type="password" v-model="pwd" @keyup.13="passFocusTo('passwordInput')" class="form-control" placeholder="Password">
             </div>
             <button class="btn btn-default" @click="login">Login</button>
             <a href="#" @click="register">Register</a>
