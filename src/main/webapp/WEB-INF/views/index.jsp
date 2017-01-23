@@ -49,7 +49,7 @@
         </div>
         <div id="menuDiv" class="col-md-8 col-md-offset-2" style="text-align: center" hidden>
             <a class="hyperlink" href="#" @click="switchList">{{listName}}</a> |
-            <%--<a class="hyperlink" href="reports">Reports</a> |--%>
+            <a class="hyperlink" href="reports">Reports</a> |
             <a class="hyperlink" href="logout"> Logout</a>
         </div>
     </div>
@@ -80,7 +80,7 @@
                     <div class="col-md-12">
                         <div class="row">
                             <div class="col-xs-3 col-md-3">List price</div>
-                            <div class="col-xs-7 col-md-8">
+                            <div class="col-xs-7 col-md-5">
                                 <input id="listPrice" v-model="listPrice" @keyup.13="passFocusTo('shopNameInput')" type="number">
                             </div>
                             <div class="col-xs-2">
@@ -91,7 +91,7 @@
                     <div class="col-md-12">
                         <div class="row">
                             <div class="col-xs-3 col-md-3">Shop</div>
-                            <div class="col-xs-7 col-md-8">
+                            <div class="col-xs-7 col-md-5">
                                 <input id="shopNameInput" v-model="shopName" @keyup.13="closeList" type="text">
                             </div>
                             <div class="col-xs-2">
@@ -224,10 +224,6 @@
                     self.items = data;
                 }
             });
-
-//            $( "#itemNameId" ).autocomplete({
-//                source: ['Apa', 'carne', 'peste']
-//            });
         },
         methods: {
             // active list actions

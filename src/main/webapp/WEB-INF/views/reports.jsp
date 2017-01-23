@@ -23,6 +23,13 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
             crossorigin="anonymous"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <meta name="_csrf" content="${_csrf.token}"/>
+    <!-- default header name is X-CSRF-TOKEN -->
+    <meta name="_csrf_header" content="${_csrf.headerName}"/>
+
 </head>
 <body>
 <div class="container-fluid" id="app">
@@ -33,8 +40,49 @@
         </div>
     </div>
 
-
+    <div v-for="(item, index) in lists" class="row">
+        <div class="col-xs-6" style="display: inline-block">{{item.shop}}</div>
+        <div class="col-sx-2" style="display: inline-block">{{item.price}}</div>
+    </div>
 
 </div>
+
+
+<script type="text/javascript">
+    <%--https://docs.spring.io/spring-security/site/docs/current/reference/html/csrf.html--%>
+    $(function () {
+        var token = $("meta[name='_csrf']").attr("content");
+        var header = $("meta[name='_csrf_header']").attr("content");
+        $(document).ajaxSend(function (e, xhr, options) {
+            xhr.setRequestHeader(header, token);
+        });
+    });
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            lists: []
+        },
+        created: function () {
+            //do a login check
+            var self = this;
+            console.log("ready vue");
+
+            $.ajax({
+                type: "GET",
+                url: "r/lists",
+                contentType: 'application/json; charset=utf-8',
+                success: function (data, status) {
+                    console.log("data: " + data);
+                    console.log("status: " + status);
+                    self.lists = data;
+                }
+            });
+        },
+        methods: {}
+    });
+
+</script>
+
 </body>
 </html>
