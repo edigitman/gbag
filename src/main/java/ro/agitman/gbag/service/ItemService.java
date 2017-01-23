@@ -29,7 +29,7 @@ public class ItemService {
     private final String CLEAR_ALL_ARCH_ITEMS = "delete from items where arch = true and owner = :owner and bought = false";
     private final String INSERT_CLOSED_LIST = "insert into closedlist (shop, price, owner) values(:shop, :price, :owner)";
     private final String UPDATE_CLOSED_LIST_ITEMS = "update items set listid = :listid, bought = true where owner = :owner and bought = false";
-    private final String AUTOCOMPLETE = "select name from items where owner = :owner and name like :name ";
+    private final String AUTOCOMPLETE = "select name from items where owner = :owner and LOWER(name) like :name";
 
 
     @Autowired
@@ -192,7 +192,7 @@ public class ItemService {
 
         try (Connection con = sql2o.open()) {
             return con.createQuery(AUTOCOMPLETE).
-                    addParameter("name", param + "%").
+                    addParameter("name", param.toLowerCase() + "%").
                     addParameter("owner", user.getId()).executeAndFetch(String.class);
         }
     }
