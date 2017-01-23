@@ -164,7 +164,6 @@
             source: "i/ac",
             minLength: 2,
             select: function( event, ui ) {
-                $('#itemQuantity').focus();
             }
         });
     } );
