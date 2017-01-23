@@ -59,30 +59,30 @@
 
             <div class="row" style="text-align: center; margin-top: 5px" id="addItemDiv">
                 <div class="col-md-8 col-xs-8">
-                    <input id="itemNameId" v-model="itemName" style="width: 100%" type="text" placeholder="Item">
+                    <input id="itemNameId" v-model="itemName" @keyup.13="$('#itemQuantity').focus()" style="width: 100%" type="text" placeholder="Item">
                 </div>
                 <div class="col-md-2 col-xs-2">
-                    <input v-model="itemQt" style="width: 100%" type="number" min="0.0" placeholder="qt.">
+                    <input id="itemQuantity" v-model="itemQt" @keyup.13="$('#addItemBtn').focus()" style="width: 100%" type="number" min="0.0" placeholder="qt.">
                 </div>
                 <div class="col-md-2 col-xs-2">
-                    <button class="btn btn-info" @click="addItem">Add</button>
+                    <button id="addItemBtn" class="btn btn-info" @click="addItem">Add</button>
                 </div>
             </div>
             <div style="text-align: center; margin-top: 5px" id="activeListItemActionsDiv">
                 <div id="itemPriceDiv" hidden>
-                    Price <input id="itemPrice" v-model="itemPrice" type="number">
-                    <button class="btn btn-success" @click="addToBasket">B</button>
+                    Price <input id="itemPrice" v-model="itemPrice" @keyup.13="$('#addToBasketBtn').focus()" type="number">
+                    <button id="addToBasketBtn" class="btn btn-success" @click="addToBasket">B</button>
                     <button class="btn btn-danger" @click="cancelAddToBasket">C</button>
                 </div>
 
                 <div id="listPriceDiv" hidden class="row">
                     <div class="col-md-12">
-                        List price<input id="listPrice" v-model="listPrice" type="number">
+                        List price<input id="listPrice" v-model="listPrice" @keyup.13="$('#shopNameInput').focus()" type="number">
                     </div>
                     <div class="col-md-12">
-                        Shop <input v-model="shopName" type="text">
+                        Shop <input id="shopNameInput" v-model="shopName" @keyup.13="$('#closeListBtn').focus()" type="text">
                     </div>
-                    <button class="btn btn-success" @click="closeList">A</button>
+                    <button id="closeListBtn" class="btn btn-success" @click="closeList">A</button>
                     <button class="btn btn-danger" @click="cancelCloseList">C</button>
                 </div>
             </div>
