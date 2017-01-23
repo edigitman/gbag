@@ -5,10 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import ro.agitman.gbag.model.ClosedListModel;
 import ro.agitman.gbag.model.ItemModel;
 import ro.agitman.gbag.service.ItemService;
@@ -92,5 +89,12 @@ public class ItemController extends AbstractController {
 
         itemService.closeList(closedList, getPrincipal());
         return "[]";
+    }
+
+    @RequestMapping(value = {"ac"}, method = RequestMethod.GET, produces = "application/json; charset=utf-8")
+    @ResponseBody
+    public String autoComplete(@RequestParam("term") String param) {
+
+        return gson.toJson(itemService.getNames(param, getPrincipal()));
     }
 }

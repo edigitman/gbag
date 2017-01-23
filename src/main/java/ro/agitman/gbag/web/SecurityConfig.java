@@ -41,6 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/auth/isAuth").authenticated()
                 .antMatchers("/i/**").authenticated()
                 .antMatchers("/a/**").authenticated()
+                .antMatchers("/reports").authenticated()
                 .and().formLogin()
                 .loginPage("/login").loginProcessingUrl("/login")
                 .usernameParameter("email")

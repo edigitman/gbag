@@ -7,8 +7,10 @@
     <title>gbag - list</title>
 
     <script src="static/js/jquery-2.2.4.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="static/js/vuejs-2.1.6.js"></script>
 
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" type="text/css" href="static/css/style.css">
 
     <!-- Latest compiled and minified CSS -->
@@ -40,7 +42,7 @@
             </div>
             <div class="form-group">
                 <label for="passwordInput">Password</label>
-                <input id="passwordInput" type="password" v-model="pwd" @keyup.13="passFocusTo('passwordInput')" class="form-control" placeholder="Password">
+                <input id="passwordInput" type="password" v-model="pwd" @keyup.13="login" class="form-control" placeholder="Password">
             </div>
             <button class="btn btn-default" @click="login">Login</button>
             <a href="#" @click="register">Register</a>
@@ -61,7 +63,7 @@
                     <input id="itemNameId" v-model="itemName" @keyup.13="passFocusTo('itemQuantity')" style="width: 100%" type="text" placeholder="Item">
                 </div>
                 <div class="col-md-2 col-xs-2">
-                    <input id="itemQuantity" v-model="itemQt" @keyup.13="passFocusTo('addItemBtn')" style="width: 100%" type="number" min="0.0" placeholder="qt.">
+                    <input id="itemQuantity" v-model="itemQt" @keyup.13="addItem" style="width: 100%" type="number" min="0.0" placeholder="qt.">
                 </div>
                 <div class="col-md-2 col-xs-2">
                     <button id="addItemBtn" class="btn btn-info" @click="addItem">Add</button>
@@ -69,20 +71,34 @@
             </div>
             <div style="text-align: center; margin-top: 5px" id="activeListItemActionsDiv">
                 <div id="itemPriceDiv" hidden>
-                    Price <input id="itemPrice" v-model="itemPrice" @keyup.13="passFocusTo('addToBasketBtn')" type="number">
-                    <button id="addToBasketBtn" class="btn btn-success" @click="addToBasket">B</button>
+                    Price <input id="itemPrice" v-model="itemPrice" @keyup.13="addToBasket" type="number">
+                    <button class="btn btn-success" @click="addToBasket">B</button>
                     <button class="btn btn-danger" @click="cancelAddToBasket">C</button>
                 </div>
 
                 <div id="listPriceDiv" hidden class="row">
                     <div class="col-md-12">
-                        List price<input id="listPrice" v-model="listPrice" @keyup.13="passFocusTo('shopNameInput')" type="number">
+                        <div class="row">
+                            <div class="col-xs-3 col-md-3">List price</div>
+                            <div class="col-xs-7 col-md-8">
+                                <input id="listPrice" v-model="listPrice" @keyup.13="passFocusTo('shopNameInput')" type="number">
+                            </div>
+                            <div class="col-xs-2">
+                                <button class="btn btn-danger" @click="cancelCloseList">C</button>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-12">
-                        Shop <input id="shopNameInput" v-model="shopName" @keyup.13="passFocusTo('closeListBtn')" type="text">
+                        <div class="row">
+                            <div class="col-xs-3 col-md-3">Shop</div>
+                            <div class="col-xs-7 col-md-8">
+                                <input id="shopNameInput" v-model="shopName" @keyup.13="closeList" type="text">
+                            </div>
+                            <div class="col-xs-2">
+                                <button id="closeListBtn" class="btn btn-success" @click="closeList">A</button>
+                            </div>
+                        </div>
                     </div>
-                    <button id="closeListBtn" class="btn btn-success" @click="closeList">A</button>
-                    <button class="btn btn-danger" @click="cancelCloseList">C</button>
                 </div>
             </div>
 
@@ -119,7 +135,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div style="text-align: right" class="col-md-2 col-md-offset-9">
+                        <div class="col-xs-offset-7 col-xs-4 col-md-2 col-md-offset-7">
                             total: {{totalListPrice}}
                         </div>
                     </div>
@@ -140,6 +156,19 @@
         </div>
     </div>
 </div>
+
+
+<script>
+    $( function() {
+        $( "#itemNameId" ).autocomplete({
+            source: "i/ac",
+            minLength: 2,
+            select: function( event, ui ) {
+                $('#itemQuantity').focus();
+            }
+        });
+    } );
+</script>
 
 <script type="text/javascript">
     <%--https://docs.spring.io/spring-security/site/docs/current/reference/html/csrf.html--%>
@@ -196,6 +225,10 @@
                     self.items = data;
                 }
             });
+
+//            $( "#itemNameId" ).autocomplete({
+//                source: ['Apa', 'carne', 'peste']
+//            });
         },
         methods: {
             // active list actions
@@ -291,7 +324,7 @@
                         cItem = self.items[i];
                     }
                 }
-                cItem.price = self.itemPrice;
+                cItem.price = self.itemPrice != '' ? self.itemPrice : 0;
                 cItem.inBasket = true;
                 cItem.index = self.itemSelectedIdx;
                 filter.push(cItem);
@@ -397,6 +430,7 @@
                 // archive un-bought ones, save list as closed for statistics
                 $("#addItemDiv").hide();
                 $("#listPriceDiv").show();
+                $("#listPrice").focus();
             },
             cancelCloseList: function () {
                 $("#listPriceDiv").hide();
@@ -561,8 +595,6 @@
             login: function () {
                 var self = this;
                 var errorMsg = $("#invalidCredentials");
-                console.log(self.email + " -- " + self.pwd);
-
 
                 errorMsg.hide();
                 $.ajax({
@@ -590,7 +622,6 @@
             },
             register: function () {
                 var self = this;
-                console.log(self.email + " -- " + self.pwd);
                 var errorMsg = $("#cannotRegister");
 
                 errorMsg.hide();

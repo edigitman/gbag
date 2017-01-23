@@ -20,7 +20,7 @@ public class ItemService {
     private final String GET_ARCH_ITEMS = "select * from items where owner = :owner and arch = true and bought = false";
     private final String INSERT_ITEM = "insert into items (owner, name, qt, bought) values (:owner, :name, :qt, :bought)";
     private final String DELETE_ITEM = "delete from items where id = :id and owner = :owner and inbasket = false";
-    private final String DELETE_ALL_ITEMS = "delete from items where owner = :owner and inbasket = false and bought = false";
+    private final String DELETE_ALL_ITEMS = "delete from items where owner = :owner and inbasket = false and bought = false and arch = false";
     private final String BASKET_ADD_ITEM = "update items set inbasket = true, price = :price where id = :id and owner = :owner";
     private final String BASKET_REMOVE_ITEM = "update items set inbasket = false, price = 0 where id = :id and owner = :owner";
     private final String ARCHIVE_ITEM = "update items set arch = :arch where id = :id and owner = :owner and inbasket = false";
@@ -29,6 +29,8 @@ public class ItemService {
     private final String CLEAR_ALL_ARCH_ITEMS = "delete from items where arch = true and owner = :owner and bought = false";
     private final String INSERT_CLOSED_LIST = "insert into closedlist (shop, price, owner) values(:shop, :price, :owner)";
     private final String UPDATE_CLOSED_LIST_ITEMS = "update items set listid = :listid, bought = true where owner = :owner and bought = false";
+    private final String AUTOCOMPLETE = "select name from items where owner = :owner and name like :name ";
+
 
     @Autowired
     private Sql2o sql2o;
@@ -182,6 +184,16 @@ public class ItemService {
                     addParameter("owner", user.getId()).executeUpdate();
 
             con.commit();
+        }
+    }
+
+    public List<String> getNames(String param, String principal) {
+        MyUser user = userService.getByEmail(principal);
+
+        try (Connection con = sql2o.open()) {
+            return con.createQuery(AUTOCOMPLETE).
+                    addParameter("name", param + "%").
+                    addParameter("owner", user.getId()).executeAndFetch(String.class);
         }
     }
 }

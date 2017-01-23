@@ -1,13 +1,14 @@
 CREATE TABLE items (
-  id         INT       AUTO_INCREMENT PRIMARY KEY,
-  owner      INT,
-  name       VARCHAR(50),
-  qt         NUMBER(10, 2),
-  inBasket   BOOLEAN DEFAULT FALSE,
-  price      NUMBER(10, 4) DEFAULT 0,
-  arch       BOOLEAN DEFAULT FALSE ,
-  listId     INT,
-  createDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  id         INT           AUTO_INCREMENT PRIMARY KEY,
+  owner      INT,                         -- user id
+  name       VARCHAR(50),                 -- name of the item
+  qt         NUMBER(10, 2),               -- quantity, initially set
+  inBasket   BOOLEAN       DEFAULT FALSE, -- item is in basket, but not yet bought, you are in the store buying things
+  price      NUMBER(10, 4) DEFAULT 0,     -- the price of the item (total)
+  arch       BOOLEAN       DEFAULT FALSE, -- the item is postponed, to be revised later
+  bought     BOOLEAN       DEFAULT FALSE, -- item is bought, you already payed for it
+  listId     INT,                         -- bought items are linked to a closed list, this is the id
+  createDate TIMESTAMP     DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE users (
@@ -26,19 +27,7 @@ CREATE TABLE loginPersisted (
   last_used DATETIME
 );
 
-CREATE TABLE shippingList (
-  id         INT       AUTO_INCREMENT PRIMARY KEY,
-  userId     INT,
-  name       VARCHAR(50),
-  shop       VARCHAR(50),
-  closeDate  DATETIME,
-  total      NUMBER(10, 4),
-  createDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-alter table items add column bought boolean after arch;
-
-create TABLE closedlist (
+CREATE TABLE closedlist (
   id         INT       AUTO_INCREMENT PRIMARY KEY,
   owner      INT,
   shop       VARCHAR(50),
