@@ -23,14 +23,14 @@ public class ArchController {
     private ItemService itemService;
     private Gson gson = new Gson();
 
-    @RequestMapping(value = {"promote"}, method = RequestMethod.POST)
+    @RequestMapping(value = {"promote"}, method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ResponseBody
     public String promoteItem(ItemModel item) {
         itemService.promoteItem(item.getId(), getPrincipal());
         return gson.toJson(itemService.getArchItems(getPrincipal()));
     }
 
-    @RequestMapping(value = {"promoteAll"}, method = RequestMethod.POST)
+    @RequestMapping(value = {"promoteAll"}, method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ResponseBody
     public String promoteAllItems() {
         itemService.promoteAllItems(getPrincipal());

@@ -21,7 +21,8 @@ public class AuthController extends AbstractController{
     @Autowired
     private ItemService itemService;
 
-    @RequestMapping(value = {"/isAuth"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"/isAuth"}, method = RequestMethod.GET,
+            produces = "application/json; charset=utf-8")
     @ResponseBody
     public String reports(ModelMap model) {
         return gson.toJson(itemService.getItems(getPrincipal()));

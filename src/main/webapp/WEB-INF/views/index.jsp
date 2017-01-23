@@ -194,8 +194,7 @@
                     $("#menuDiv").show();
                     $("#listDiv").show();
                     $("#itemNameId").focus();
-                    self.items = $.parseJSON(data);
-                    //todo load items
+                    self.items = data;
                 }
             });
         },
