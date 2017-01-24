@@ -71,7 +71,7 @@
             </div>
             <div style="text-align: center; margin-top: 5px" id="activeListItemActionsDiv">
                 <div id="itemPriceDiv" hidden>
-                    Price <input id="itemPrice" v-model="itemPrice" @keyup.13="addToBasket" type="number">
+                    Price of {{itemName}}: <input id="itemPrice" v-model="itemPrice" @keyup.13="addToBasket" type="number">
                     <button class="btn btn-success" @click="addToBasket">B</button>
                     <button class="btn btn-danger" @click="cancelAddToBasket">C</button>
                 </div>
@@ -294,6 +294,11 @@
                 // price total, qt , price / qt, brand / model
                 var self = this;
                 self.itemSelectedIdx = index;
+                for (var i = 0; i < self.items.length; i++) {
+                    if (self.items[i].id == index) {
+                        self.itemName = self.items[i].name;
+                    }
+                }
                 $("#addItemDiv").hide();
                 $("#itemPriceDiv").show();
                 $("#itemPrice").focus();
@@ -301,6 +306,7 @@
             cancelAddToBasket: function () {
                 // hide and clear add to basket form
                 var self = this;
+                self.itemName = '';
                 self.itemPrice = '';
                 self.itemSelectedIdx = '';
                 $("#itemPriceDiv").hide();
@@ -350,15 +356,6 @@
                         cItem = self.items[i];
                     }
                 }
-                // put the item in the old index in list
-//                var cIndex = cItem.index;
-//
-//                delete cItem.inBasket;
-//                delete cItem.index;
-//
-//                filter.splice(cIndex, 0, cItem);
-
-//                self.items = filter;
 
                 $.ajax({
                     type: "DELETE",

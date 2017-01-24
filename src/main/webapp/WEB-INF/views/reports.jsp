@@ -40,9 +40,25 @@
         </div>
     </div>
 
-    <div v-for="(item, index) in lists" class="row">
-        <div class="col-xs-6" style="display: inline-block">{{item.shop}}</div>
-        <div class="col-sx-2" style="display: inline-block">{{item.price}}</div>
+    <div class="row" style="margin-top: 10px">
+        <div class="col-md-8 col-md-offset-2 col-xs-12">
+            <table width="100%">
+                <thead>
+                <tr>
+                    <th width="50%">Shop</th>
+                    <th width="25%">Price</th>
+                    <th width="25%">Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="(list, index) in lists">
+                    <td>{{list.shop}}</td>
+                    <td>{{list.price}}</td>
+                    <td>{{list.createDate}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
 </div>
